@@ -15,7 +15,8 @@
 
   <!-- Custom fonts for this template -->
   <link href="https://basisr.s3.amazonaws.com/training/Task2/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://basisr.s3.amazonaws.com/training/Task2/vendor/simple-line-icons/css/simple-line-icons.css">
+  <link rel="stylesheet"
+    href="https://basisr.s3.amazonaws.com/training/Task2/vendor/simple-line-icons/css/simple-line-icons.css">
   <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
@@ -27,41 +28,56 @@
   <link href="https://basisr.s3.amazonaws.com/training/Task2/css/new-age.css" rel="stylesheet">
   <script>
 
-      var uid;
+    var uid;
+    var idvar;
+    var google;
 
-      // Prevent forms from submitting.
-      function preventFormSubmit() {
-        var forms = document.querySelectorAll('form');
-        for (var i = 0; i < forms.length; i++) {
-          forms[i].addEventListener('submit', function (event) {
-            event.preventDefault();
-          });
-        }
+    // Prevent forms from submitting.
+    function preventFormSubmit() {
+      var forms = document.querySelectorAll('form');
+      for (var i = 0; i < forms.length; i++) {
+        forms[i].addEventListener('submit', function (event) {
+          event.preventDefault();
+        });
       }
-      window.addEventListener('load', preventFormSubmit);
+    }
+    window.addEventListener('load', preventFormSubmit);
 
-      function handleFormSubmit(formObject) {
-        console.log('here');
-        var idvar = document.getElementById("idfromurl");
+    function handleFormSubmit(formObject) {
+      idvar = document.getElementById("idfromurl");
 
-        //idvar.value = 1234;
-        idvar.value = uid;
+      //idvar.value = 1234;
+      //idvar.value = uid;
+      idvar.value = getUserID();
+      //google.script.run.withSuccessHandler(updateUrl).processForm(formObject);
+      runProcess(formObject);
+    }
+    function updateUrl(url) {
+      console.log('Uploaded');
+    }
+    function getUserID() {
+      if (isAppsScript()) {
+        uid = "<?!= uid ?>";
+      }
+      else {
+        var url = new URL(window.location.href);
+        uid = url.searchParams.get("uid");
+      }
+      return uid;
+    }
+    function runProcess(formObject) {
+      console.log('calling runProcess returning ' + uid + ' and ' + document.getElementById("InputFirstName").value + ' and ' + document.getElementById("InputLastName").value)
+      if (isAppsScript()) {
+        console.log('calling google scripts')
         google.script.run.withSuccessHandler(updateUrl).processForm(formObject);
       }
-      function updateUrl(url) {
-        console.log('Uploaded');
+      else {
+        console.log('not calling google scripts')
+        //google.script.run.withSuccessHandler(updateUrl).processForm(formObject);
       }
-      function getUserID() {
-        if (isAppsScript()) {
-          uid = "<?!= uid ?>";
-        }
-        else {
-          var url = new URL(window.location.href);
-          uid = url.searchParams.get("uid");
-        }
-      }
+    }
     function isAppsScript() {
-      if (google===undefined) {
+      if (google === undefined) {
         return false;
       } else {
         return true;
@@ -105,7 +121,7 @@
     <div class="container h-100">
       <div class="row h-100">
         <div class="col-lg-12 my-auto">
-          <form  onsubmit="handleFormSubmit(this)">
+          <form onsubmit="handleFormSubmit(this)">
             <div class="form-group">
               <label for="InputFirstName">First Name</label>
               <input class="form-control" id="InputFirstName" name="InputFirstName" placeholder="First Name">
@@ -115,7 +131,7 @@
               <input class="form-control" id="InputLastName" name="InputLastName" placeholder="Last Name">
             </div>
             <input id="idfromurl" name="idfromurl" type="hidden">
-            <br/>
+            <br />
             <!--
             <div class="form-check">
               <input type="checkbox" class="form-check-input" id="exampleCheck1">
